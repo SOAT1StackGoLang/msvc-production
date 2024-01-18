@@ -2,7 +2,6 @@ package domain
 
 import (
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 	"time"
 )
 
@@ -22,22 +21,6 @@ const (
 type Order struct {
 	ID        uuid.UUID
 	UserID    uuid.UUID
-	PaymentID uuid.UUID
-	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt time.Time
-	Price     decimal.Decimal
 	Status    OrderStatus
-	Products  []Product
-}
-
-type Product struct {
-	ID          uuid.UUID
-	CategoryID  uuid.UUID
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   time.Time
-	Name        string
-	Description string
-	Price       decimal.Decimal
 }
