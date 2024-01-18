@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/SOAT1StackGoLang/msvc-production/pkg/domain"
 	"github.com/google/uuid"
+	"time"
 )
 
 type productionSvc struct {
@@ -20,5 +21,14 @@ func NewProductionService(cacheSvc CacheService) ProductionService {
 }
 
 func (p *productionSvc) UpdateOrderStatus(ctx context.Context, userID, orderID uuid.UUID, status domain.OrderStatus) (*domain.Order, error) {
-	return nil, nil
+	order := &domain.Order{
+		ID:        orderID,
+		UserID:    userID,
+		UpdatedAt: time.Now(),
+		Status:    status,
+	}
+
+	err := p.cacheSvc.OrderStatusChanged(ctx, "alguma key? pubsub?", *order) // TODO async
+
+	return order, err
 }
