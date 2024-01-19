@@ -11,9 +11,9 @@ package mocks
 
 import (
 	context "context"
+	domain "github.com/SOAT1StackGoLang/msvc-production/pkg/service"
 	reflect "reflect"
 
-	domain "github.com/SOAT1StackGoLang/msvc-production/pkg/domain"
 	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"github.com/SOAT1StackGoLang/msvc-production/pkg/domain"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -11,13 +10,13 @@ type cacheSvc struct {
 	cacheClient redis.Client
 }
 
-func (c *cacheSvc) OrderStatusChanged(ctx context.Context, whereTo any, order domain.Order) error {
+func (c *cacheSvc) OrderStatusChanged(ctx context.Context, whereTo any, order Order) error {
 	//TODO implement me
 	panic("implement me")
 }
 
 type CacheService interface {
-	OrderStatusChanged(ctx context.Context, whereTo any, order domain.Order) error
+	OrderStatusChanged(ctx context.Context, whereTo any, order Order) error
 }
 
 func NewCacheService(client redis.Client) CacheService {
