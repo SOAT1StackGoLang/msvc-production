@@ -2,7 +2,7 @@ package transport
 
 import (
 	"context"
-	"github.com/SOAT1StackGoLang/msvc-production/pkg/service"
+	service2 "github.com/SOAT1StackGoLang/msvc-production/internal/service"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/google/uuid"
 	"net/http"
@@ -30,17 +30,17 @@ type (
 	}
 )
 
-func MakeServerEndpoints(svc service.ProductionService) Endpoints {
+func MakeServerEndpoints(svc service2.ProductionService) Endpoints {
 	return Endpoints{
 		UpdateOrderStatusEndpoint: makeUpdateOrderStatusEndpoint(svc),
 	}
 }
 
-func makeUpdateOrderStatusEndpoint(svc service.ProductionService) endpoint.Endpoint {
+func makeUpdateOrderStatusEndpoint(svc service2.ProductionService) endpoint.Endpoint {
 	return func(ctx context.Context, request any) (any, error) {
 		req := request.(updateOrderRequest)
 
-		_, err := svc.UpdateOrderStatus(ctx, uuid.MustParse(req.UserID), uuid.MustParse(req.OrderID), service.OrderStatus(req.Status))
+		_, err := svc.UpdateOrderStatus(ctx, uuid.MustParse(req.UserID), uuid.MustParse(req.OrderID), service2.OrderStatus(req.Status))
 		if err != nil {
 			return updateOrderResponse{Error: errorResponse{
 				Description: "Erro interno do servidor",
