@@ -21,7 +21,7 @@ deps:
     RUN ls -althR
     RUN apk add --no-cache git
     #RUN git config --global url."ssh://git@github.com/".insteadOf https://github.com/
-    RUN git config --global credential.helper 'store --file=/build/.git-credentials'
+    RUN git config --global credential.helper 'store --file=~/.netrc'
     RUN echo "https://$GITHUB_TOKEN:x-oauth-basic@github.com" > /build/.git-credentials
     RUN go mod tidy
     RUN go mod download
@@ -32,7 +32,7 @@ compile:
     FROM +deps
     ARG GITHUB_TOKEN
     ENV GOPRIVATE=github.com/SOAT1StackGoLang
-    RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrcs
+    RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrc
     ARG GOOS=linux
     ARG GOARCH=amd64
     ARG VARIANT
