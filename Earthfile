@@ -13,16 +13,18 @@ file:
     SAVE ARTIFACT ./
 deps:
     FROM golang:alpine
-    RUN git config --global url."ssh://git@github.com/".insteadOf https://github.com/
+    ARG GITHUB_TOKEN
     ENV GOPRIVATE=github.com/SOAT1StackGoLang/
     WORKDIR /build
     COPY +file/* ./
     RUN ls -althR
     RUN apk add --no-cache git
-    RUN git config --global credential.helper store  # Configure git to use a credential store
-    RUN echo "https://git:$GITHUB_TOKEN@github.com/" > ~/.git-credentials  # Use the GitHub token for authentication
+    RUN git config --global url."ssh://git@github.com/".insteadOf https://github.com/
+    RUN git config --global credential.helper 'store --file=/build/.git-credentials'
+    RUN echo "https://git:$GITHUB_TOKEN@github.com/" > /build/.git-credentials
     RUN go mod tidy
     RUN go mod download
+
 
 
 compile:
