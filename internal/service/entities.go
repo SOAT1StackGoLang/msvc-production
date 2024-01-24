@@ -19,8 +19,7 @@ const (
 )
 
 type Order struct {
-	ID        uuid.UUID
-	UserID    uuid.UUID
-	UpdatedAt time.Time
-	Status    OrderStatus
+	ID        uuid.UUID   `json:"id"`
+	UpdatedAt time.Time   `json:"updated_at"`
+	Status    OrderStatus `json:"status"`
 }

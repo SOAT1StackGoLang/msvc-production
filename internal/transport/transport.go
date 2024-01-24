@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/SOAT1StackGoLang/msvc-production/internal/endpoint"
 	"github.com/SOAT1StackGoLang/msvc-production/internal/service"
 	kitlog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/transport"
@@ -22,7 +23,7 @@ type errorer interface {
 
 func NewHttpHandler(pS service.ProductionService, logger kitlog.Logger) http.Handler {
 	r := mux.NewRouter()
-	sE := MakeServerEndpoints(pS)
+	sE := endpoint.MakeServerEndpoints(pS)
 
 	options := []httptransport.ServerOption{
 		httptransport.ServerErrorHandler(transport.NewLogErrorHandler(logger)),
@@ -42,14 +43,15 @@ func NewHttpHandler(pS service.ProductionService, logger kitlog.Logger) http.Han
 }
 
 func decodeUpdateOrderRequest(_ context.Context, r *http.Request) (request interface{}, err error) {
-	var req updateOrderRequest
+	var req endpoint.UpdateOrderRequest
 	if e := json.NewDecoder(r.Body).Decode(&req); e != nil {
-		return updateOrderResponse{
-			Error: errorResponse{},
+		return endpoint.ErrorResponse{
+			Description: "invalid request",
+			Code:        http.StatusBadRequest,
 		}, ErrBadRequest
 	}
 
-	return updateOrderRequest{
+	return endpoint.UpdateOrderRequest{
 		OrderID: req.OrderID,
 		Status:  req.Status,
 	}, nil
