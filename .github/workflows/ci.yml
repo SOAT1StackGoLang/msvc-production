@@ -50,8 +50,8 @@ jobs:
       run: earthly --push +all
       working-directory: .
       env:
-        GOPRIVATE: github.com/SOAT1StackGoLang/ # Pass the GitHub token to the Earthly build
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Pass the GitHub token to the Earthly build
+        GOPRIVATE: github.com/SOAT1StackGoLang/
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   trivy:
     uses: ./.github/workflows/trivy.yml

@@ -19,11 +19,11 @@ deps:
     COPY +file/* ./
     RUN ls -althR
     RUN apk add --no-cache git
+    RUN git config --global credential.helper store  # Configure git to use a credential store
+    RUN echo "https://git:$GITHUB_TOKEN@github.com/" > ~/.git-credentials  # Use the GitHub token for authentication
     RUN go mod tidy
     RUN go mod download
-    #RUN go get -u github.com/swaggo/swag/cmd/swag
-    #RUN go install github.com/swaggo/swag/cmd/swag
-    #RUN swag init -g ../../cmd/web/routes.go -o ./docs -d ./internal/handlers
+
 
 compile:
     FROM +deps
