@@ -14,6 +14,7 @@ file:
 deps:
     FROM golang:alpine
     RUN git config --global url."ssh://git@github.com/".insteadOf https://github.com/
+    ENV GOPRIVATE=github.com/SOAT1StackGoLang/
     WORKDIR /build
     COPY +file/* ./
     RUN ls -althR
