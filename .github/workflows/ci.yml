@@ -43,6 +43,9 @@ jobs:
       run: earthly --version
     - name: Debug Registry
       run: echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" && echo "$IMAGE_NAME"
+    - name: Setup access for private go modules
+      run: |
+        git config --global url."ssh://git@github.com/".insteadOf https://github.com/
     - name: Run build
       run: earthly --push +all
       working-directory: .
