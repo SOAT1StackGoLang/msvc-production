@@ -46,6 +46,8 @@ jobs:
     - name: Run build
       run: earthly --push +all
       working-directory: .
+      env:
+        GOPRIVATE: github.com/SOAT1StackGoLang/ # Pass the GitHub token to the Earthly build
   trivy:
     uses: ./.github/workflows/trivy.yml
     needs: build-and-push
