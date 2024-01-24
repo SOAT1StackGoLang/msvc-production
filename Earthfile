@@ -14,7 +14,8 @@ file:
 deps:
     FROM golang:alpine
     ARG GITHUB_TOKEN
-    ENV GOPRIVATE=github.com/SOAT1StackGoLang/
+    ENV GOPRIVATE=github.com/SOAT1StackGoLang
+    RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrc
     WORKDIR /build
     COPY +file/* ./
     RUN ls -althR
@@ -28,6 +29,9 @@ deps:
 
 
 compile:
+    ARG GITHUB_TOKEN
+    ENV GOPRIVATE=github.com/SOAT1StackGoLang
+    RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrcs
     FROM +deps
     ARG GOOS=linux
     ARG GOARCH=amd64

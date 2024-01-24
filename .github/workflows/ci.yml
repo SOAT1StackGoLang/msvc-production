@@ -47,12 +47,8 @@ jobs:
       run: |
         git config --global url."ssh://git@github.com/".insteadOf https://github.com/
     - name: Run build
-      run: earthly --push +all
+      run: earthly --secret GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --push +all
       working-directory: .
-      env:
-        GOPRIVATE: github.com/SOAT1StackGoLang/
-      with:
-        args: --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   trivy:
     uses: ./.github/workflows/trivy.yml
