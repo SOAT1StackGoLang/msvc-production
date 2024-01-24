@@ -29,10 +29,10 @@ deps:
 
 
 compile:
+    FROM +deps
     ARG GITHUB_TOKEN
     ENV GOPRIVATE=github.com/SOAT1StackGoLang
     RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrcs
-    FROM +deps
     ARG GOOS=linux
     ARG GOARCH=amd64
     ARG VARIANT
