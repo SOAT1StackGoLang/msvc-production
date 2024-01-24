@@ -51,7 +51,8 @@ jobs:
       working-directory: .
       env:
         GOPRIVATE: github.com/SOAT1StackGoLang/
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        args: --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   trivy:
     uses: ./.github/workflows/trivy.yml
