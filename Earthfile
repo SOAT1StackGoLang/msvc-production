@@ -20,9 +20,9 @@ deps:
     COPY +file/* ./
     RUN ls -althR
     RUN apk add --no-cache git
-    RUN git config --global url."ssh://git@github.com/".insteadOf https://github.com/
+    #RUN git config --global url."ssh://git@github.com/".insteadOf https://github.com/
     RUN git config --global credential.helper 'store --file=/build/.git-credentials'
-    RUN echo "https://git:$GITHUB_TOKEN@github.com/" > /build/.git-credentials
+    RUN echo "https://$GITHUB_TOKEN:x-oauth-basic@github.com" > /build/.git-credentials
     RUN go mod tidy
     RUN go mod download
 
