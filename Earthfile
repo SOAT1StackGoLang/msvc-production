@@ -20,9 +20,7 @@ deps:
     COPY +file/* ./
     RUN ls -althR
     RUN apk add --no-cache git
-    #RUN git config --global url."ssh://git@github.com/".insteadOf https://github.com/
     RUN git config --global credential.helper 'store --file=~/.netrc'
-    RUN echo "https://$GITHUB_TOKEN:x-oauth-basic@github.com" > /build/.git-credentials
     RUN go mod tidy
     RUN go mod download
 
