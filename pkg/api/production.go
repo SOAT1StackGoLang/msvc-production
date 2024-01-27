@@ -9,21 +9,27 @@ import (
 	"net/http"
 )
 
-type Client struct {
+type client struct {
 	baseURL    string
 	httpClient *http.Client
 	logger     kitlog.Logger
 }
 
-func NewClient(baseURL string, httpClient *http.Client, logger kitlog.Logger) *Client {
-	return &Client{
+type ProductionAPI interface {
+	UpdateOrder(request UpdateOrderRequest) (UpdateOrderResponse, error)
+}
+
+
+//go:generate mockgen -destination=../mocks/api_mocks.go -package=mocks github.com/SOAT1StackGoLang/msvc-production/pkg/api ProductionAPI
+func NewClient(baseURL string, httpClient *http.Client, logger kitlog.Logger) ProductionAPI {
+	return &client{
 		baseURL:    baseURL,
 		httpClient: httpClient,
 		logger:     logger,
 	}
 }
 
-func (c *Client) UpdateOrder(request UpdateOrderRequest) (UpdateOrderResponse, error) {
+func (c *client) UpdateOrder(request UpdateOrderRequest) (UpdateOrderResponse, error) {
 	url := fmt.Sprintf("%s/production", c.baseURL)
 
 	payload, err := json.Marshal(request)
