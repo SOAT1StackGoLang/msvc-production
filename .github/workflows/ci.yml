@@ -47,7 +47,7 @@ jobs:
       run: |
         git config --global url."ssh://git@github.com/".insteadOf https://github.com/
     - name: Run build
-      run: earthly --secret GITHUB_TOKEN=${{ secrets.ACCESS_TOKEN }} --push +all
+      run: earthly --push +all --ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
       working-directory: .
 
   trivy:

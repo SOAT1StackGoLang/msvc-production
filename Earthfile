@@ -12,15 +12,16 @@ file:
     LOCALLY
     SAVE ARTIFACT ./
 deps:
+    ARG ACCESS_TOKEN
     FROM golang:alpine
-    ARG GITHUB_TOKEN
-    ENV GOPRIVATE=github.com/SOAT1StackGoLang
-    RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrc
-    WORKDIR /build
+    WORKDIR /go/src/app
     COPY +file/* ./
-    RUN ls -althR
     RUN apk add --no-cache git
-    RUN git config --global credential.helper 'store --file=~/.netrc'
+    ENV GOPRIVATE=github.com/SOAT1StackGoLang/
+    ENV GO111MODULE=on
+    ENV GITHUB_ACCESS_TOKEN=$ACCESS_TOKEN
+    RUN printf "machine github.com\nlogin %s\npassword x-oauth-basic\n" "$GITHUB_ACCESS_TOKEN" > ~/.netrc
+    RUN cat ~/.netrc
     RUN go mod tidy
     RUN go mod download
 
@@ -28,9 +29,6 @@ deps:
 
 compile:
     FROM +deps
-    ARG GITHUB_TOKEN
-    ENV GOPRIVATE=github.com/SOAT1StackGoLang
-    RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrc
     ARG GOOS=linux
     ARG GOARCH=amd64
     ARG VARIANT
