@@ -13,18 +13,24 @@ file:
     SAVE ARTIFACT ./
 deps:
     FROM golang:alpine
+    ARG GITHUB_TOKEN
+    ENV GOPRIVATE=github.com/SOAT1StackGoLang
+    RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrc
     WORKDIR /build
     COPY +file/* ./
     RUN ls -althR
     RUN apk add --no-cache git
+    RUN git config --global credential.helper 'store --file=~/.netrc'
     RUN go mod tidy
     RUN go mod download
-    #RUN go get -u github.com/swaggo/swag/cmd/swag
-    #RUN go install github.com/swaggo/swag/cmd/swag
-    #RUN swag init -g ../../cmd/web/routes.go -o ./docs -d ./internal/handlers
+
+
 
 compile:
     FROM +deps
+    ARG GITHUB_TOKEN
+    ENV GOPRIVATE=github.com/SOAT1StackGoLang
+    RUN echo "machine github.com login $GITHUB_TOKEN password x-oauth-basic" > ~/.netrc
     ARG GOOS=linux
     ARG GOARCH=amd64
     ARG VARIANT
