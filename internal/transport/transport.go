@@ -32,7 +32,7 @@ func NewHttpHandler(pS service.ProductionService, logger kitlog.Logger) http.Han
 
 	// POST /producao/ altera o status do pedido
 
-	r.Methods(http.MethodPost).Path("/v1/producao/").Handler(httptransport.NewServer(
+	r.Methods(http.MethodPost).Path("/production/").Handler(httptransport.NewServer(
 		sE.UpdateOrderStatusEndpoint,
 		decodeUpdateOrderRequest,
 		encodeResponse,
