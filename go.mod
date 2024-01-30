@@ -3,7 +3,7 @@ module github.com/SOAT1StackGoLang/msvc-production
 go 1.21.6
 
 require (
-	github.com/SOAT1StackGoLang/msvc-payments v1.0.0
+	github.com/SOAT1StackGoLang/msvc-payments v1.1.2
 	github.com/go-kit/kit v0.13.0
 	github.com/go-kit/log v0.2.1
 	github.com/google/uuid v1.6.0
