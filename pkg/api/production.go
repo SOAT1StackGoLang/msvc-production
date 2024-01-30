@@ -10,22 +10,19 @@ import (
 )
 
 type client struct {
-	baseURL    string
-	httpClient *http.Client
-	logger     kitlog.Logger
+	baseURL string
+	logger  kitlog.Logger
 }
 
 type ProductionAPI interface {
 	UpdateOrder(request UpdateOrderRequest) (UpdateOrderResponse, error)
 }
 
-
 //go:generate mockgen -destination=../mocks/api_mocks.go -package=mocks github.com/SOAT1StackGoLang/msvc-production/pkg/api ProductionAPI
-func NewClient(baseURL string, httpClient *http.Client, logger kitlog.Logger) ProductionAPI {
+func NewClient(baseURL string, logger kitlog.Logger) ProductionAPI {
 	return &client{
-		baseURL:    baseURL,
-		httpClient: httpClient,
-		logger:     logger,
+		baseURL: baseURL,
+		logger:  logger,
 	}
 }
 
@@ -44,7 +41,8 @@ func (c *client) UpdateOrder(request UpdateOrderRequest) (UpdateOrderResponse, e
 
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.httpClient.Do(req)
+	httpClient := &http.Client{}
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return UpdateOrderResponse{}, err
 	}
