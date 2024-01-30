@@ -6,8 +6,6 @@ import (
 	"github.com/SOAT1StackGoLang/msvc-payments/pkg/datastore"
 )
 
-var OrderStatusChannel = "order_status_changed"
-
 type pubSvc struct {
 	pubSvc datastore.RedisStore
 }
