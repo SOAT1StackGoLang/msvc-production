@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/SOAT1StackGoLang/msvc-production/pkg"
 	"github.com/google/uuid"
 	"time"
 )
@@ -39,7 +40,7 @@ func (p *productionSvc) UpdateOrderStatus(ctx context.Context, orderID uuid.UUID
 		return nil, err
 	}
 
-	err = p.pubSvc.PublishOrderStatusChanged(ctx, OrderStatusChannel, *order)
+	err = p.pubSvc.PublishOrderStatusChanged(ctx, pkg.OrderStatusChannel, *order)
 
 	return order, err
 }
