@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	logger "github.com/SOAT1StackGoLang/msvc-payments/pkg/middleware"
 	kitlog "github.com/go-kit/log"
 	"net/http"
+	"strings"
 )
 
 type client struct {
@@ -20,6 +22,9 @@ type ProductionAPI interface {
 
 //go:generate mockgen -destination=../mocks/api_mocks.go -package=mocks github.com/SOAT1StackGoLang/msvc-production/pkg/api ProductionAPI
 func NewClient(baseURL string, logger kitlog.Logger) ProductionAPI {
+	if !strings.HasPrefix(baseURL, "http://") && !strings.HasPrefix(baseURL, "https://") {
+		baseURL = "http://" + baseURL
+	}
 	return &client{
 		baseURL: baseURL,
 		logger:  logger,
@@ -34,7 +39,9 @@ func (c *client) UpdateOrder(request UpdateOrderRequest) (UpdateOrderResponse, e
 		return UpdateOrderResponse{}, err
 	}
 
-	req, err := http.NewRequest(http.MethodPatch, url, bytes.NewBuffer(payload))
+	logger.Info(fmt.Sprintf("production url: %s", url))
+
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(payload))
 	if err != nil {
 		return UpdateOrderResponse{}, err
 	}
@@ -49,7 +56,7 @@ func (c *client) UpdateOrder(request UpdateOrderRequest) (UpdateOrderResponse, e
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return UpdateOrderResponse{}, errors.New("unexpected status code")
+		return UpdateOrderResponse{}, errors.New(fmt.Sprintf("%s %v", "unexpected status code", resp.StatusCode))
 	}
 
 	var responseBody UpdateOrderResponse
