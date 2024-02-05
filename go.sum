@@ -1,5 +1,5 @@
-github.com/SOAT1StackGoLang/msvc-payments v1.0.0 h1:PA8WpEfS3DduADO/nvUcRsnkO/B6u7GU3KRA/nk6iQw=
-github.com/SOAT1StackGoLang/msvc-payments v1.0.0/go.mod h1:wKHi09o26xBI9B8Ji3pOoaBu21O87HRCUZPtiyC2PRU=
+github.com/SOAT1StackGoLang/msvc-payments v1.1.4 h1:tHjTnjearekQPN3AD50sSiqvSOW55DruQlJvTsHO9+g=
+github.com/SOAT1StackGoLang/msvc-payments v1.1.4/go.mod h1:i7dtNz9tGJz3yDMGOE0odftqwTMvQClJ4fhtS5US9v0=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
 github.com/bsm/ginkgo/v2 v2.12.0/go.mod h1:SwYbGRRDovPVboqFv0tPTcG1sN61LM1Z4ARdbAV9g4c=
 github.com/bsm/gomega v1.27.10 h1:yeMWxP2pV2fG3FgAODIY8EiRE3dy0aeFYt4l7wh6yKA=
