@@ -26,6 +26,11 @@ RUN ls -alth
 # Download dependencies
 RUN go get -d -v ./...
 
+## Run Swag
+RUN go get -u github.com/swaggo/swag/cmd/swag
+RUN go install github.com/swaggo/swag/cmd/swag
+RUN swag init -g helpers.go -o ./docs -d ./internal/transport/ -ot go
+
 # Build the application
 RUN go build -o /go/bin/app -v cmd/server/*.go
 
