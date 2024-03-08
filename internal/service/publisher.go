@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/SOAT1StackGoLang/msvc-payments/pkg/datastore"
+	"github.com/SOAT1StackGoLang/msvc-production/pkg/messages"
 )
 
 type pubSvc struct {
@@ -11,7 +12,7 @@ type pubSvc struct {
 }
 
 //go:generate mockgen -destination=../mocks/pubsub_mocks.go -package=mocks github.com/SOAT1StackGoLang/msvc-production/internal/service Publisher
-func (p *pubSvc) PublishOrderStatusChanged(ctx context.Context, channel string, order Order) error {
+func (p *pubSvc) PublishOrderStatusChanged(ctx context.Context, channel string, order messages.ProductionStatusChangedMessage) error {
 	marshalled, err := json.Marshal(order)
 	if err != nil {
 		return err
@@ -21,7 +22,7 @@ func (p *pubSvc) PublishOrderStatusChanged(ctx context.Context, channel string, 
 
 type (
 	Publisher interface {
-		PublishOrderStatusChanged(ctx context.Context, channel string, order Order) error
+		PublishOrderStatusChanged(ctx context.Context, channel string, order messages.ProductionStatusChangedMessage) error
 	}
 )
 
