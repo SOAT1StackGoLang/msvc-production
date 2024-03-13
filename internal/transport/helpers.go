@@ -12,7 +12,9 @@
 
 //	@BasePath	/
 
-//	@securityDefinitions.basic	BasicAuth
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 // @externalDocs.description	OpenAPI
 // @externalDocs.url			https://swagger.io/resources/open-api/
