@@ -13,9 +13,15 @@ type productionSvc struct {
 	pubSvc   Publisher
 }
 
+func (p *productionSvc) SubscribeToIncomingOrders() {
+	//TODO implement me
+	panic("implement me")
+}
+
 //go:generate mockgen -destination=../mocks/service.go -package=mocks github.com/SOAT1StackGoLang/msvc-production/internal/service ProductionService
 type ProductionService interface {
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status OrderStatus) (*Order, error)
+	SubscribeToIncomingOrders()
 }
 
 func NewProductionService(cacheSvc CacheService, svc Publisher) ProductionService {
@@ -40,7 +46,9 @@ func (p *productionSvc) UpdateOrderStatus(ctx context.Context, orderID uuid.UUID
 		return nil, err
 	}
 
-	err = p.pubSvc.PublishOrderStatusChanged(ctx, pkg.OrderStatusChannel, *order)
+	out := order.ToProductionStatusChangedMessage()
+
+	err = p.pubSvc.PublishOrderStatusChanged(ctx, pkg.OrderStatusChannel, out)
 
 	return order, err
 }

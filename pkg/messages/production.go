@@ -1,6 +1,6 @@
 package messages
 
-type OrderStatusChanged struct {
+type OrderSentMessage struct {
 	OrderID string `json:"order_id"`
 	Status  string `json:"status"`
 }
