@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/SOAT1StackGoLang/msvc-payments/pkg/datastore"
+	"github.com/SOAT1StackGoLang/msvc-production/pkg/messages"
 	kitlog "github.com/go-kit/kit/log"
 	"github.com/google/uuid"
 	"time"
@@ -19,6 +20,53 @@ var ErrRecordNotFound = errors.New("no matching key found")
 type cacheSvc struct {
 	cacheClient datastore.RedisStore
 	logger      kitlog.Logger
+}
+
+func (c *cacheSvc) SubscribeToIncomingOrders() {
+	ctx := context.Background()
+	sub, err := c.cacheClient.Subscribe(ctx, messages.ProductionChannel)
+	if err != nil {
+		c.logger.Log("error", err)
+		return
+	}
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case msg := <-sub:
+			c.handleIncomingOrder(msg.Payload)
+		}
+	}
+}
+
+func (c *cacheSvc) handleIncomingOrder(msg string) {
+	var in messages.OrderSentMessage
+	err := json.Unmarshal([]byte(msg), &in)
+	if err != nil {
+		c.logger.Log("error parsing order sent message", err)
+		return
+	}
+
+	orderID, err := uuid.Parse(in.OrderID)
+
+	savedOrder, err := c.GetOrder(context.Background(), orderID)
+	if err == nil && savedOrder.Status == ORDER_STATUS_CANCELED {
+		c.logger.Log("order already canceled")
+		return
+	}
+
+	order, err := OrderFromOrderSentMessage(in)
+	if err != nil {
+		c.logger.Log("error parsing order sent message", err)
+		return
+	}
+
+	err = c.SaveOrderStatusChanged(context.Background(), *order)
+	if err != nil {
+		c.logger.Log("error saving order status", err)
+	}
+
 }
 
 func (c *cacheSvc) GetOrder(ctx context.Context, orderID uuid.UUID) (*Order, error) {
@@ -48,6 +96,7 @@ func (c *cacheSvc) SaveOrderStatusChanged(ctx context.Context, order Order) erro
 type CacheService interface {
 	SaveOrderStatusChanged(ctx context.Context, order Order) error
 	GetOrder(ctx context.Context, orderID uuid.UUID) (*Order, error)
+	SubscribeToIncomingOrders()
 }
 
 func NewCacheService(client datastore.RedisStore, log kitlog.Logger) CacheService {

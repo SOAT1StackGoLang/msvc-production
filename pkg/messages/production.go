@@ -1,8 +1,8 @@
 package messages
 
 type OrderSentMessage struct {
-	OrderID string `json:"order_id"`
-	Status  string `json:"status"`
+	OrderID string      `json:"order_id"`
+	Status  OrderStatus `json:"status"`
 }
 
 type ProductionStatusChangedMessage struct {

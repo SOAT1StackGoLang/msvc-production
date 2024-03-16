@@ -46,3 +46,15 @@ func OrderFromProductionStatusChangedMessage(msg messages.ProductionStatusChange
 		Status:    OrderStatus(msg.Status),
 	}, nil
 }
+
+func OrderFromOrderSentMessage(msg messages.OrderSentMessage) (*Order, error) {
+	id, err := uuid.Parse(msg.OrderID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Order{
+		ID:     id,
+		Status: OrderStatus(msg.Status),
+	}, nil
+}
