@@ -24,6 +24,10 @@ deps:
     RUN cat ~/.netrc
     RUN go mod tidy
     RUN go mod download
+    ## Run Swag
+    RUN go get -u github.com/swaggo/swag/cmd/swag
+    RUN go install github.com/swaggo/swag/cmd/swag
+    RUN swag init -g helpers.go -o ./docs -d ./internal/transport/ -ot go
 
 
 
@@ -33,6 +37,7 @@ compile:
     ARG GOARCH=amd64
     ARG VARIANT
     RUN ls -alth && pwd
+    ## Run Compile
     RUN GOARM=${VARIANT#v} CGO_ENABLED=0 go build \
         -installsuffix 'static' \
         -o compile/app cmd/server/*.go
