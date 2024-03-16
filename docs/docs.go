@@ -26,6 +26,11 @@ const docTemplate = `{
     "paths": {
         "/production": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update order status the possible status are: \"Recebido|Preparacao|Pronto|Finalizado|Cancelado\"",
                 "consumes": [
                     "application/json"
@@ -73,8 +78,10 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     },
     "externalDocs": {

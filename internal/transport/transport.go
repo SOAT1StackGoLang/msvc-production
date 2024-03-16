@@ -43,30 +43,31 @@ func NewHttpHandler(pS service.ProductionService, logger kitlog.Logger) http.Han
 		options...,
 	))
 
-	r.Methods(http.MethodGet).PathPrefix("/swagger").Handler(httpSwagger.Handler(
-		httpSwagger.URL("/swagger/doc.json"), // URL pointing to the API definition
+	r.Methods(http.MethodGet).PathPrefix("/production/swagger").Handler(httpSwagger.Handler(
+		httpSwagger.URL("/production/swagger/doc.json"), // URL pointing to the API definition
 		httpSwagger.DeepLinking(true),
 		httpSwagger.DocExpansion("none"),
 		httpSwagger.DomID("swagger-ui"),
 	))
 	// redirect / to /swagger/index.html
-	r.Methods(http.MethodGet).Path("/").Handler(http.RedirectHandler("/swagger/index.html", http.StatusMovedPermanently))
+	r.Methods(http.MethodGet).Path("/").Handler(http.RedirectHandler("/production/swagger/index.html", http.StatusMovedPermanently))
 
 	return r
 }
 
 // POST /production - Update order status
 //
-//	@Summary		Update order status
-//	@Tags			Production
-//	@Accept			json
-//	@Produce		json
-//	@Description	Update order status the possible status are: "Recebido|Preparacao|Pronto|Finalizado|Cancelado"
-//	@Param			request	body		string	true	"Update order status request data"	SchemaExample({\r\n "order_id": "123e4567-e89b-12d3-a456-426614174000",\r\n "status": "Preparacao"\r\n})
-//	@Success		200		{string}	string	"ok"
-//	@Failure		400		{string}	string	"error"
-//	@Failure		500		{string}	string	"error"
-//	@Router			/production [post]
+//		@Summary		Update order status
+//		@Tags			Production
+//	 @Security		ApiKeyAuth
+//		@Accept			json
+//		@Produce		json
+//		@Description	Update order status the possible status are: "Recebido|Preparacao|Pronto|Finalizado|Cancelado"
+//		@Param			request	body		string	true	"Update order status request data"	SchemaExample({\r\n "order_id": "123e4567-e89b-12d3-a456-426614174000",\r\n "status": "Preparacao"\r\n})
+//		@Success		200		{string}	string	"ok"
+//		@Failure		400		{string}	string	"error"
+//		@Failure		500		{string}	string	"error"
+//		@Router			/production [post]
 func decodeUpdateOrderRequest(_ context.Context, r *http.Request) (request interface{}, err error) {
 	var req endpoint.UpdateOrderRequest
 	if e := json.NewDecoder(r.Body).Decode(&req); e != nil {
