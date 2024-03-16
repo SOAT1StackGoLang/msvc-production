@@ -23,6 +23,7 @@ type Config struct {
 func LoadConfig() (Config, error) {
 	var cfg Config
 
+	//godotenv.Load(".env")
 	// Load KVSHost
 	cfg.KVSHost = os.Getenv("KVSTORE_HOST")
 	if cfg.KVSHost == "" {

@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/SOAT1StackGoLang/msvc-production/pkg"
+	"github.com/SOAT1StackGoLang/msvc-production/pkg/messages"
 	"github.com/google/uuid"
 	"time"
 )
@@ -13,16 +13,25 @@ type productionSvc struct {
 	pubSvc   Publisher
 }
 
+func (p *productionSvc) SubscribeToIncomingOrders() {
+	go p.cacheSvc.SubscribeToIncomingOrders()
+}
+
 //go:generate mockgen -destination=../mocks/service.go -package=mocks github.com/SOAT1StackGoLang/msvc-production/internal/service ProductionService
 type ProductionService interface {
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status OrderStatus) (*Order, error)
+	SubscribeToIncomingOrders()
 }
 
 func NewProductionService(cacheSvc CacheService, svc Publisher) ProductionService {
-	return &productionSvc{
+	pS := &productionSvc{
 		cacheSvc: cacheSvc,
 		pubSvc:   svc,
 	}
+
+	go pS.SubscribeToIncomingOrders()
+
+	return pS
 }
 
 func (p *productionSvc) UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status OrderStatus) (*Order, error) {
@@ -35,12 +44,19 @@ func (p *productionSvc) UpdateOrderStatus(ctx context.Context, orderID uuid.UUID
 		Status:    status,
 	}
 
-	err := p.cacheSvc.SaveOrderStatusChanged(ctx, *order)
+	cached, err := p.cacheSvc.GetOrder(ctx, orderID)
+	if err == nil && cached.Status == ORDER_STATUS_CANCELED {
+		return nil, errors.New("order already canceled")
+	}
+
+	err = p.cacheSvc.SaveOrderStatusChanged(ctx, *order)
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.pubSvc.PublishOrderStatusChanged(ctx, pkg.OrderStatusChannel, *order)
+	out := order.ToProductionStatusChangedMessage()
+
+	err = p.pubSvc.PublishOrderStatusChanged(ctx, messages.ProductionStatusChannel, out)
 
 	return order, err
 }
